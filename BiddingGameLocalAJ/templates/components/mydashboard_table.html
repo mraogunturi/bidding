@@ -1,0 +1,63 @@
+{% load appfilter %}
+{{game.id}}$$$$$$${{game.id|get_joined_user_count}}$$$$$$$
+                    <!--If the userGame.status ==E and start tiem is not yet passed  then show join and view button orelse  -->
+                                                {% if game.id == userGame.game_id and userGame.status == 'J' or userGame.status == 'T' or userGame.status == 'B' or userGame.status == 'I'%}
+                                                <input type="hidden" id="fecth_game_status" value="1" />
+                                                    <form name="PlayGame" action="/PlayGame/" method="get"
+                                                          enctype="multipart/form-data">
+                                                        
+                                                        <input type="hidden" value="{{ game.id }}" name="game">
+                                                        
+                                                        
+                                                        {% if game.game_status == 'S' %}
+                                                        <button class="btn btn-primary" style="background:#666666;border-color:none; color:#ffffff" name="play" title="Clicking Play game take you to new page to place bids"><i
+                                                                class="fa fa-sign-in">&nbsp;<b>Play Game</b></i>
+                                                        </button>
+                                                        {% endif %}
+                                                        {% if game.user.id == request.user.id %}
+                                                            {% if game.game_status != 'S' %}
+                                                            <button class="btn btn-primary"style="background:#333333;border-color:none; color:#ffffff" name="playi"  title="Clicking Start Game will allow other players to place bids">
+                                                            <i class="fa fa-sign-in">&nbsp;<b>Start Game</b></i>
+                                                            </button>
+                                                            {% endif %}
+                                                        <!-- {{ game.game_status }} -->
+                                                        {% if game.game_status == 'S' %}
+                                                        <button class="btn btn-warning" style="background:#54616e;border-color:none; color:#ffffff" name="start_bidding" title="Clicking this button will start game instantly with current No of players who placed their bids"><i
+                                                                class="fa fa-eye">&nbsp;<b>start without me</b></i></button>
+
+                                                        {% endif %}
+                                                        
+                                                        
+
+                                                        {% endif %}
+                                                        {% if game.game_status == 'S' and game.user.id == request.user.id %}
+                                                        <a class="btn btn-primary" href="/GameDetails/delete_game/{{ game.id }}/" title="Will delete the game"><i class="fa fa-danger" ><b>Delete Game</b></i></a>
+                                                        {% endif %}
+                                                    </form>
+                                                    <br>
+                                                    <form name="GameDetails" action="/GameDetails/" method="post"
+                                                          enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{ game.id }}" name="game">
+                                                        <button class="btn btn-warning" style="background:#54616e;border-color:none; color:#ffffff" name="view"><i
+                                                                class="fa fa-eye">&nbsp;<b>View</b></i></button>
+                                            <!--            {#                                                        {% if game.user.id == request.user.id %}#} -->
+                                                        <button class="btn btn-danger" style="background:#333333; border-color:none;color:#ffffff"name="quit"><i
+                                                                class="fa fa-sign-out ">&nbsp;<b>Quit</b></i></button>
+
+                                                        {#{% endif %}#}
+                                                    </form>
+                                                {% elif game.id == userGame.game_id and userGame.status == 'Q' or userGame.status == 'I' %}
+                                                    <form name="GameDetails" action="/GameDetails/" method="post"
+                                                          enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{ game.id }}" name="game">
+                                                        <button class="btn btn-primary" style="background:#ff6418;border-color:none; color:#ffffff" name="result"
+                                                                style="background-color:#54616e;border-color: #357ebd;">
+                                                            <i class="fa fa-bar-chart-o">&nbsp;<b>Result</b></i>
+                                                        </button>
+                                                        <button class="btn btn-warning" style="background:#54616e;border-color:none; color:#ffffff" name="view"><i
+                                                                class="fa fa-eye">&nbsp;<b>View</b></i></button>
+
+                                                    </form>
+                                                {% endif %}

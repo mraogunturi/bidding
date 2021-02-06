@@ -1,0 +1,19 @@
+<table class="table table-striped table-advance table-hover"  id="mynewGameResults">
+                                <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>User</th>
+                                    <th>Net Contribution</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in winner %}
+                                    <tr>
+                                        <td>{{ i.player_rank }}</td>
+                                        <td>{{ i.user_nick_name }}</td>
+                                        <td>{{ i.player_total_net_contribution }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>

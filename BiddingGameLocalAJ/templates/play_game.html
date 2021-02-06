@@ -1,0 +1,973 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load appfilter %}
+{% block head %}
+<link href='{% static "css/slidebars.css" %}' rel="stylesheet">
+
+    <script src='{% static "js/html5shiv.js" %}'></script>
+    <script src='{% static "js/respond.min.js" %}'></script>
+    <link href={% static "css/bootstrap.min.css" %} rel="stylesheet">
+
+
+<style>
+.btn-circle-micro {
+	width: 15px;
+	height: 15px;
+	text-align: center;
+	padding: 1px 0;
+	font-size: 1px;
+	line-height: 0.1;
+	border-radius: 25px;
+}
+
+.scroll_bar
+{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+</style>
+
+{% endblock %}
+                    {% block extra_header_tabs %}
+                    <li class="active"><a href="#">Play Game</a></li>
+                {% endblock %}
+{% block page_content %}
+            <!-- page start-->
+            <div class="row-fluid" id="draggable_portlets">
+                <div class="col-md-12 column sortable">
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" >
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="panel-heading" style="background:#ff6418; color:#ffffff">Instructions
+ </div>
+                                <div class="modal-body">
+                                    <style>
+table {
+font-family: arial;
+    border-collapse: collapse;
+    width: 100%;
+}
+td {
+    text-align: left;
+        }
+tr.border_bottom td {
+  border-bottom:1pt solid black;
+}
+
+}
+</style>
+                                    <table>
+
+                                   <tr><td> <label class="col-xs-6 .col-md-6"><b>Game name :</label></td><td><label class="col-xs-6 .col-md-4" style="align:center"><b>{{ game_data.name }} </label></td></tr>
+
+                                    <tr><td><label class="col-xs-6 .col-md-6"><b>Current Players:</label></td><td><label class="col-xs-6 .col-md-4" style="align:center"><b>{{ game_data.id|get_joined_user_count }}</label></td></tr>
+
+                                    <tr><td><label class="col-xs-6 .col-md-6"><b> Loaded move Cost:</label></td><td><label class="col-xs-6 .col-md-4" style="align:center"><b>{{ game_data.loaded_cost_per_truck }}</label></td></tr>
+
+                                    <tr><td><label class="col-xs-6 .col-md-6"><b>Empty move Cost:</label></td><td><label class="col-xs-6 .col-md-4" style="align:center"><b>{{ game_data.empty_cost_per_truck }}</label></td></tr>
+
+
+
+
+
+                                    <tr><td> <label class="col-xs-6 .col-md-6"><b>Trucks available :</label></td></td><td><label class="col-xs-6 .col-md-4" style="align:center"><b>{{ game_data.no_of_trucks }}</label></td></tr>
+
+                                    </table>
+                        </br>
+
+                                <p>Bidding is started. </p>
+
+<p>You are bidding on headhaul loads from facility A to facility B as well as on backhaul loads from facilty B back to facility A. You need to plan round-trips to get your drivers back home to facility A. If they only run one direction (A to B or B to A), then they need to run the other leg of the trip empty. There is a cost to running the miles empty, and there is a (slightly higher) cost to running a load. Loads are awarded to the lowest bidders.</p>
+
+<p>If you bid too high (>1200), you may not get awarded any loads, because there is a broker who will cover them for less money. If you bid too low, you may not cover your costs. If you make money in a turn, your fleet size will increase. If you do not make money, your fleet size will decrease. </p>
+
+<p>Check the SIMULATION INFO box for in-game information on these values.
+</p>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" id="instructions_btn" class="btn btn-primary"  style="background:#ff6418;border-color:none; color:#ffffff"
+                                                                style="background-color:#428bca;border-color: #357ebd;">I understand</button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="panel panel-warning instructions_accepted">
+                        <div class="panel-heading" style="background:#ff6418; color:#ffffff">Play Game:{{ game_data.name }}
+
+                        </div>
+                        <table>
+  <tr>
+    <td><div ><label>Turn Number :</label><label id="turn_id">{{ turn|add:1}}</label></td>
+    <td><label>Trip cost (A-B or B-A) :$</label><label>{{ game_data.loaded_cost_per_truck }}</label></td>
+    <td><label>Brokerage Price :$</label><label>{{ game_data.brokerage_fee }}</label></td>
+
+  </tr>
+
+
+ <tr>
+    <td><div id="bid_turn_status_div">
+    <label>Players :</label><label id="total_player_count">{{ game_data.id|get_joined_user_count }}</label></div></td>
+    <td><label>Round Trip :$</label><label>{{ game_data.loaded_cost_per_truck|multiply:2 }}</label></td>
+    <td><label>A-B loads :</label><label id="a2b_loads"></label></td><td>
+
+  </tr>
+  <tr>
+    <td><div id="bid_turn_status_div"><label>Bids this turn :</label><label id="bid_player_count"></label></div></td>
+    <td><label>Current Fleet Size :</label><label id="fleet_size">{{game_data.no_of_trucks}}</label></td>
+     <td><label>B-A loads :</label><label id="b2a_loads"></label></td>
+
+
+  </tr>
+ <tr class="border_bottom">
+ <td></td>
+ <td><label>Net Profit :$</label><label id="net_profit"></label></td>
+ <td></td>
+
+ </tr>
+</table>
+                            <div class="col-lg-12">
+                                <section class="panel">
+                                    <div class="panel-body">
+                                        <table>
+
+    <tr><td>
+                        <label class="col-lg-4" for="a2b" >A &#10230; B Value:</label>
+
+
+            <div class="col-lg-6">
+            <input type="number" style="width: 100px" name="a2b" min="0" id="a2b" class="bids" required onkeyup="sum();"  placeholder="$" data-toggle="tooltip" title="Value should be greater than 0 and less than brokerage price" data-placement="top"
+            class="form-control input-number" placeholder="" value="{{mybid.last.value_a2b}}" >
+            </div></td>
+
+
+<td>
+                            <label class="col-lg-4" for="b2a" >B &#10230; A Value:</label>
+
+
+            <div class="col-lg-6">
+            <input type="number"  style="width: 100px" name="b2a" min="0" id="b2a" class="bids" required onkeyup="sum();" placeholder="$" data-toggle="tooltip" title="Value should be greater than 0 and less than brokerage price" data-placement="top"
+            class="form-control input-number" placeholder="" value="{{mybid.last.value_b2a}}" >
+            </div></td>
+
+<td>
+                            <label class="col-lg-4" for="roundtripcost" >Round trip Cost:</label>
+
+
+            <div class="col-lg-6">
+            <input type="number" style="width: 100px" name="b2a" id="RTC" placeholder="$" data-placement="top"
+            class="form-control input-number" placeholder="" value="" readonly >
+            </div></td>
+                         </tr>
+                                    </table>
+                                        </div>
+                                        <div class="form-group" >
+                                            <input type="hidden" value="{{ game_id }}" name="game">
+                                            <input type="text" value="{{turn}}" name="n_current_turn" id="current_turn" style="display:none">
+                                             <div class="col-lg-offset-2 col-lg-10">
+                                                {% if not  error_message %}
+                                                <div class="col-lg-8">
+												{% if turn == 0 %}
+                                                <button id="placebid" style="background:#54616e; color:#ffffff" class="btn btn-success" >Place Bid</button>
+												{% endif %}
+                                                <button id="place_it" class="btn btn-danger" style="background:#54616e; color:#ffffff">Place Bid</button>
+                                                <span id="timerCountDown" style="display:none;margin-left:15px"><label id="timerLabel"></label></span>
+                                                {% if game_data.user.id == request.user.id and turn <= 1 %}
+
+                                                        <button class="btn btn-primary" style="background:#54616e; color:#ffffff" id="next_turn_btn" name="force1"><i
+                                                            class="fa fa-sign-out"><b>Next Turn</b></i></button>
+                                                {% endif %}
+                                                </div>
+                                                <div class="col-lg-4">
+                                                {% if game_data.user.id == request.user.id %}
+                                                        <a id="gameDeleteBtn" href="{% url 'delete_game' game=game_id %}"   >
+                                                            <button class="btn btn-primary"  name="delete_game" style="background:#54616e; color:#ffffff; float:right;"><i
+                                                            class="fa fa-danger" ><b>Delete Game</b></i></button>
+                                                        </a>
+
+                                                {% endif %}
+                                                </div>
+                                                 <div id="shiftButton">
+                                                        <form name="GameDetails" action="/GameDetails/" method="post"
+                                                          enctype="multipart/form-data">9
+                                                          {% csrf_token %}
+                                                         <input type="hidden" value="{{ game_id }}" name="game">
+                                                        <input type="hidden" value="{{ game_id }}" name="quit">
+                                                    <input type="hidden" value="1" name="redirect_to_results">
+                                                            <button class="btn btn-danger" name="quit"><i
+
+
+                                                               class="fa fa-sign-out ">&nbsp;<b>Quit</b></i></button>
+
+                                                    </form>
+                                                 </div>
+                                                 <div id="resultButton" style="display:none">
+
+                                                        <form name="GameDetails" action="/GameDetails/" method="post"
+
+                                                          enctype="multipart/form-data">
+
+                                                          {% csrf_token %}
+
+                                                         <input type="hidden" value="{{ game_id }}" name="game">
+
+                                                        <input type="hidden" value="{{ game_id }}" name="quit">
+
+                                                    <input type="hidden" value="1" name="redirect_to_results">
+
+                                                            <b style="color:#00CC33">Game is over.</b>&nbsp;<button class="btn btn-danger" name="quit"><i
+
+                                                               class="fa fa-sign-out ">&nbsp;<b>Show Result</b></i></button>
+
+
+
+                                                    </form>
+
+                                                 </div>
+
+
+                                                    <div>{{time_delta}}</div>
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+
+                    <!-- BEGIN Portlet PORTLET-->
+
+
+                    <div class="panel panel-success instructions_accepted">
+                        <div class="panel-heading" style="background:#666666; color:#ffffff">Your Current Game Bid Values:{{ game_data.name }}
+
+                        </div>
+                        <div class="scroll_bar">
+                            <table class="table table-striped table-advance table-hover" id="mytable">
+                                <thead>
+                                <tr>
+                                    <th>Turn</th>
+                                    <th>Bid A &#10230; B</th>
+                                    <th>Bid B &#10230; A</th>
+                                    <th>Award A &#10230; B</th>
+                                    <th>Award B &#10230; A</th>
+                                    <th>Fleet Size</th>
+                                    <th>Net Contribution</th>
+                                    <th>Contribution Per Load</th>
+
+                                </tr>
+                                </thead>
+                                <tbody id="updatediv">
+                                </tbody>
+                            </table>
+                        </div>
+						<br />
+                    </div>
+                    <!-- END Portlet PORTLET-->
+                </div>
+
+            </div>
+{% endblock %}
+{% block extra_js %}
+
+
+<script src={% static "js/draggable-portlet.js" %}></script>
+<script src={% static "js/PlayGame.js" %}></script>
+
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+td, th {
+    text-align: left;
+
+}
+
+}
+</style>
+
+<script>
+    $("#gameDeleteBtn").click(function(e){
+        if(!confirm("Are you sure?")){
+            e.preventDefault();
+            return false;
+        }
+    });
+
+  function sum() {
+            var txtFirstNumberValue = document.getElementById('a2b').value;
+            var txtSecondNumberValue = document.getElementById('b2a').value;
+            var result = parseInt(txtFirstNumberValue) + parseInt(txtSecondNumberValue);
+            if (!isNaN(result)) {
+                document.getElementById('RTC').value = result;
+            }
+        }
+</script>
+
+
+<script>
+        $('.input-number').on('keypress', function(e){
+  return e.metaKey || // cmd/ctrl
+    e.which <= 0 || // arrow keys
+    e.which == 8 || // delete key
+    /[0-9]/.test(String.fromCharCode(e.which)); // numbers
+});
+         $('#a2b').tooltip({'trigger':'focus'});
+          $('#b2a').tooltip({'trigger':'focus'});
+         $("#myModal").modal({
+        show: true,
+        keyboard: false,
+        backdrop: 'static'
+    }).on('shown.bs.modal', function () {
+          $('#instructions_btn').focus();
+        });
+
+var turn_id = {{ turn }};
+var currentTurn = {{ turn }};
+var placebid_clicked = false;
+var added_turns_to_table = [];
+var start_timer = null;
+var no_of_trucks = {{ game_data.no_of_trucks }};
+var growth_ratio = {{ game_data.growth_ratio }};
+var shrink_ratio = {{ game_data.shrink_ratio }};
+
+var processGameErrorMsg = function(result){
+    console.log(result);
+
+    if(result['error_message'] == "Game Turn Limit Reached"){
+        showResults();
+        return;
+    }
+
+    if(result['error_message'] == "This Game has been deleted by the game owner."){
+        //showResults();
+		alert(result['error_message'])
+		window.location.href = "/GameDetails/results/{{game_id}}/"
+        return;
+    }
+
+    if(result['error_message']){
+       alert(result['error_message']);
+       window.location.assign("/Dashboard/");
+   }
+}
+
+    function display_turn_result(){
+        $.ajax({
+            method: 'GET',
+            url: "/refresh_page/",
+            data: {
+                game: {{game_id}},
+                turn:turn_id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: function (data) {
+
+                var result = data;
+                processGameErrorMsg(result);
+                console.log(result);
+                move_next();
+                $('#placebid').hide();
+                $('#place_it').hide();
+                $('#next_turn_btn').hide();
+                $('#shiftButton').hide();
+                var myBid = [];;
+                if(result.mybid){
+                    myBid = JSON.parse(result.mybid);
+                }
+                if(result.turn == 0){
+                    $('#placebid').show();
+                     $('#next_turn_btn').show();
+                // } else if(result.turn == 1 && result.turn_match_status == false){
+                //     $('#next_turn_btn').show();
+                    // next_turnchange();
+				}
+				else if (result.turn == 1 && result.turn_match_status == false){
+					$('#next_turn_btn').show();
+                } else if(result.turn == 1 && result.turn_match_status == true){
+                    next_turnchange();
+                } else if(result.turn >= result.turn_limit){
+                    $('#timerCountDown').hide();
+                    $('#shiftButton').find('form').submit();
+                } else if(result.turn > myBid.length){
+                    next_turnchange();
+                } else {
+
+                    // var time = 0;
+                    // if(result.timediff){
+                    //    if((60 - result.timediff) > 0){
+                    //        time = 60 - result.timediff;
+                    //    }
+                    // }
+                    // allowedTime = time;
+                    // timer = 0;
+                    $('#place_it').show();
+                    turnPlacedBid = false;
+
+                    clearInterval(start_timer);
+                    startTimer();
+                    console.log("start timer called: display");
+                }
+                var table = $('#updatediv');
+                //table.empty();
+                var obj = [];
+                if(result.mybid){
+                    if(JSON.parse(result.mybid)){
+                        obj = JSON.parse(result.mybid);
+                    }
+                }
+                obj.sort(function(element1,element2){
+                   return element1["fields"]["no_of_turn"] - element2["fields"]["no_of_turn"];
+                });
+                for (var i = 0; i < obj.length; i++) {
+                    var no_of_turn = obj[i]["fields"]["no_of_turn"];
+                    // do not add repetitive turns to the table
+                    if( (added_turns_to_table.length > 0 ) && (added_turns_to_table.indexOf(no_of_turn)>-1)){
+                        continue;
+                    }
+                    added_turns_to_table.push(no_of_turn);
+                    console.log("display_turn_result  " + added_turns_to_table);
+                    table.prepend('<tr><td>' + obj[i]["fields"]["no_of_turn"] + '</td><td>' + obj[i]["fields"]["value_a2b"] + '</td><td>' + obj[i]["fields"]["value_b2a"] + '</td><td>' + obj[i]["fields"]["trucks_a2b_Awarded"] + '</td><td>' + obj[i]["fields"]["trucks_b2a_Awarded"] + '</td><td>' + obj[i]["fields"]["fleet_size"] + '</td><td>' + obj[i]["fields"]["net_contribution"] + '</td><td>' + obj[i]["fields"]["contribution_per_load"] + '</td></tr>');
+                    update_additional_fields(obj[i]["fields"]["net_contribution"], obj[i]["fields"]["fleet_size"]);
+
+              }
+              //$("html, body").stop().animate({ scrollTop: $(document).height() }, 2000);
+
+            },
+            error: function (err) {
+                var dict = err;
+                $('#placebid').show();
+            }
+        });
+
+    }
+
+    var update_additional_fields = function(net_contibution, fleet_size){
+        var net_value  = $("#net_profit").text() ;
+        if(net_value == ""){
+            net_value = 0;
+        }
+        net_value = parseInt(net_value)  + net_contibution;
+        $("#net_profit").text(net_value);
+
+        // var fleet_size = $("#fleet_size").text();
+
+
+        if(fleet_size == ""){
+            fleet_size = no_of_trucks;
+        }
+
+        if(net_contibution > 0){
+
+            fleet_size = (Math.ceil(fleet_size * growth_ratio));
+        }
+        else{
+            fleet_size = (Math.floor(fleet_size * shrink_ratio));
+        }
+        // if (fleet_size>no_of_trucks){
+        //     fleet_size = no_of_trucks;
+        // }
+        $("#fleet_size").text(fleet_size);
+    }
+
+<!--This is nextbid function for turn1 to execute -->
+
+                      function next_turnchange () {
+                                var game_id = {{ game_id }};
+                                var turn_id = currentTurn;
+
+
+                                <!--$('#place_it').on('click', function () {-->
+                                $.ajax({
+                                    method: 'GET',
+                                    url: "/next_turn_update/",
+                                    data: {
+                                        game: game_id,
+                                        turn: turn_id,
+                                        csrfmiddlewaretoken: "{{csrf_token}}"
+                                    },
+                                    success: function (data) {
+
+                                        var result = data;
+                                        processGameErrorMsg(result);
+                                        if(turn_id <=1 ){
+                                            updateLoads();
+                                        }
+                                        //updatePlayerBidCount();
+                                        //alert(result["success"]);
+                                        //alert(result["mybid"]);
+                                        var turn_limit = result["turn_limit"];
+                                        if(result["mybid"]){
+                                          var obj = JSON.parse(result["mybid"]);
+                                        }
+                                        //net_profit
+                                        <!--myturn= result["no_of_turn"];-->
+                                        <!--turn_id=result["no_of_turn"];-->
+                                        <!--$('#turn_id').text(result["no_of_turn"]);-->
+                                         <!--document.getElementById("current_turn").innerHTML = result["no_of_turn"];-->
+                                         if(result["turn"] != 1){
+                                            $('#next_turn_btn').hide();
+                                         }
+
+                                        $('#placebid').hide();
+                                         //alert("Alert line 354");
+                                         var status=result["status"];
+                                         //alert(status);
+                                         if( status  == false || status == undefined )
+                                         <!-- check if array is empty -->
+                                         {
+                                            console.log("status is false");
+                                         $('#place_it').hide();
+
+                                          setTimeout(function(){ next_turnchange(); }, 1000);
+
+                                         }
+                                         else{
+                                        var table = $('#updatediv');
+                                        //table.empty();
+
+                                        for (var i = 0; i < obj.length; i++)
+                                        {
+                                            var no_of_turn = obj[i]["fields"]["no_of_turn"];
+                                            // do not add repetitive turns to the table
+                                            if( (added_turns_to_table.length > 0 ) && (added_turns_to_table.indexOf(no_of_turn)>-1)){
+                                                continue;
+                                            }
+                                            added_turns_to_table.push(no_of_turn);
+                                            console.log("next_turnchange " + added_turns_to_table);
+
+                                            table.prepend('<tr><td>' + obj[i]["fields"]["no_of_turn"] + '</td><td>' + obj[i]["fields"]["value_a2b"] + '</td><td>' + obj[i]["fields"]["value_b2a"] + '</td><td>' + obj[i]["fields"]["trucks_a2b_Awarded"] + '</td><td>' + obj[i]["fields"]["trucks_b2a_Awarded"] + '</td><td>' + obj[i]["fields"]["fleet_size"] + '</td><td>' + obj[i]["fields"]["net_contribution"] + '</td><td>' + obj[i]["fields"]["contribution_per_load"] + '</td></tr>');
+                                            update_additional_fields(obj[i]["fields"]["net_contribution"], obj[i]["fields"]["fleet_size"]);
+                                        }
+                                        //$("html, body").stop().animate({ scrollTop: $(document).height() }, 2000);
+
+                                            turn_id =  obj[obj.length-1]["fields"]["no_of_turn"];
+                                            document.getElementById("turn_id").innerHTML = turn_id + 1;
+                                            //alert(turn_id);
+                                            $('#current_turn').val('');
+                                            $('#current_turn').val( obj.length + 1);
+                                            $('#place_it').show();
+                                            placed_turn_count = turn_id+1;
+                                            console.log("next turn change: " + turn_id );
+                                         <!--document.getElementById("current_turn").innerHTML = turn_id;-->
+
+                                         if(turn_limit != undefined && currentTurn === turn_limit){
+                                            showResults();
+                                         } else {
+                                            turnPlacedBid = false;
+                                            // if (start_timer == null){
+                                            //     clearInterval(start_timer);
+
+                                            // }
+                                            if (turn_id != 1){
+                                                allowedTime = 60;
+
+                                            }
+                                            clearInterval(start_timer);
+
+                                            startTimer();
+
+                                                console.log("start timer called: next_turnchange");
+
+                                         }
+
+                                         }
+                                    },
+                                    error: function (err) {
+                                        var dict = err;
+                                        //next_turnchange();
+										setTimeout(function(){ next_turnchange(); }, 1000);
+
+                                    }
+                                });
+                                <!--});-->
+                      }
+
+                      function showResults(){
+                          var game_id = {{ game_id }};
+
+                        $('#place_it').hide();
+                        $('#timerCountDown').hide();
+                        //$('#shiftButton').find('button').click();
+                        $('#resultButton').show();
+                      }
+
+        <!--New Ajax set for -->
+
+        var move_next=function(){
+                //alert("move_next")
+                $('#next_turn_btn').on('click', function () {
+                                if($.trim($("#a2b").val()) == ""){
+                                    alert("Plese enter a2b value");
+                                    return false;
+                                }
+                                if($.trim($("#b2a").val()) == ""){
+                                    alert("Plese enter b2a value");
+                                    return false;
+                                }
+                                //alert("move next called");
+                                $('#next_turn_btn').hide();
+                                $("#placebid").hide();
+
+
+                                var game_id = {{ game_id }};
+                                $.ajax({
+                                    method: 'GET',
+                                    url: "/moveturn/",
+                                    data: {
+                                        gameid: game_id,
+                                        a2b : $("#a2b").val(),
+                                               b2a : $("#b2a").val(),
+                                        csrfmiddlewaretoken: "{{csrf_token}}"
+                                    },
+                                    success: function (data) {
+
+                                        var result = data;
+                                        processGameErrorMsg(result);
+
+                                        //alert(result["success"]);
+                                        //alert(result["mybid"]);
+                                        if(result["mybid"]){
+                                            var obj = JSON.parse(result["mybid"]);
+                                        }
+                                        myturn= result["turn"];
+                                        $('#next_turn_btn').hide();
+                                         $("#placebid").hide();
+                                         setTimeout(function(){$('#place_it').show();}, 2000)
+
+
+
+                                        var table = $('#updatediv');
+                                        //table.empty();
+                                        for (var i = 0; i < obj.length; i++) {
+                                            var no_of_turn = obj[i]["fields"]["no_of_turn"];
+                                            // do not add repetitive turns to the table
+                                            if( (added_turns_to_table.length > 0 ) && (added_turns_to_table.indexOf(no_of_turn)>-1)){
+                                                continue;
+                                            }
+                                            added_turns_to_table.push(no_of_turn);
+                                            console.log("move_next: next_turn_btn " + added_turns_to_table);
+                                            table.prepend('<tr><td>' + obj[i]["fields"]["no_of_turn"] + '</td><td>' + obj[i]["fields"]["value_a2b"] + '</td><td>' + obj[i]["fields"]["value_b2a"] + '</td><td>' + obj[i]["fields"]["trucks_a2b_Awarded"] + '</td><td>' + obj[i]["fields"]["trucks_b2a_Awarded"] + '</td><td>' + obj[i]["fields"]["fleet_size"] + '</td><td>' + obj[i]["fields"]["net_contribution"] + '</td><td>' + obj[i]["fields"]["contribution_per_load"] + '</td></tr>');
+                                            update_additional_fields(obj[i]["fields"]["net_contribution"], obj[i]["fields"]["fleet_size"]);
+                                        }
+                                        //$("html, body").stop().animate({ scrollTop: $(document).height() }, 2000);
+                                        //calling interval to get updated data
+                                        var turn =result["turn"];
+                                        //$('#turn_id').text(turn + 1);
+                                        turn_id = turn;
+                                        $('#current_turn').val( turn);
+                                        <!--document.getElementById("current_turn").innerHTML =turn;-->
+                                        currentTurn = turn;
+                                        next_turnchange();
+
+                                    },
+                                    error: function (err) {
+                                        var dict = err;
+                                        $('#next_turn_btn').show();
+                                    }
+                                });
+                });
+
+        }
+        <!--Main work -->
+            var game_id = {{ game_id }};
+            var myturn = {{ turn }};
+            var timer = 0;
+            var timeRemaining = "";
+            var allowedTime = 60;
+            var turnPlacedBid = false;
+            var requestSent = false;
+            var placed_turn_count = parseInt({{ turn }}) + 1;
+            $('.c').hide()
+            if (myturn > 0){
+                 $('.c').show();
+
+            }
+
+            var updateLoads = function(){
+
+                $("#a2b_loads").text(Math.floor(parseInt($("#total_player_count").text()) * no_of_trucks * 0.9));
+                $("#b2a_loads").text(Math.floor(parseInt($("#total_player_count").text()) * no_of_trucks * 0.9 * 0.8));
+            }
+            var update_loads_called=  0;
+            var timerLabel = $("#timerLabel");
+            var timerCountDown = $('#timerCountDown');
+
+            $("bid_turn_status_div").hide();
+
+function updatePlayersCount() {
+   console.log("MyTurn " + $("#turn_id").html());
+   t = parseInt($("#turn_id").html());
+   var url;
+   if (t == 1) { 
+     url = "/GameDetails/players_count/" + game_id + "/";
+   }
+   else {
+     url = "/GameDetails/current_player_count/" + game_id + "/";
+   }
+   
+         $.ajax({
+            method: 'GET',
+            url: url,
+            success: function (data) {
+			    console.log("Calling updatePlayersCount " + data['total_palyers']);
+				$("#total_player_count").text(data['total_palyers']);
+            },
+            error: function (err) {
+                console.log(err);
+                //setTimeout(updatePlayerBidCount, 1000);
+            }
+        });
+
+}
+
+
+$( document ).ready(function() {
+	{% if turn == 0 %}
+	var success = setInterval( "updatePlayersCount()", 2000);
+	{% endif %}
+});
+
+
+function updatePlayerBidCount() {
+    var baseUrl = "/GameDetails/sameBidPlayerCount/";
+    var url = baseUrl + game_id + '/' + (placed_turn_count) + '/?timestamp=' + Math.random();
+    // console.log(url);
+         $.ajax({
+            method: 'GET',
+            url: url,
+            success: function (data) {
+
+                $("#bid_player_count").text(data['number_of_player_bidded']);
+                if (myturn < 3){
+                    updateLoads();
+					$("#total_player_count").text(data['total_palyers']);
+                }
+                $("bid_turn_status_div").show();
+
+                setTimeout(updatePlayerBidCount, 1000);
+            },
+            error: function (err) {
+                console.log(err);
+                setTimeout(updatePlayerBidCount, 1000);
+            }
+        });
+
+     }
+     updateLoads();
+     setTimeout(function(){updatePlayerBidCount()}, 1000);
+
+    $('#timerCountDown').show();
+    function startTimer(){
+        console.log("startTimer called");
+
+        // setTimeout(function(){
+        start_timer = setInterval(function(){
+
+        if(turnPlacedBid){
+            timer = 0;
+            turnPlacedBid = false;
+            timeRemaining = "";
+            // $('#timerCountDown').hide();
+            timerCountDown.hide();
+            clearInterval (start_timer);
+            // start_timer = null;
+
+
+        }
+        else if(timer>=allowedTime){
+            <!--turnPlacedBid = true;-->
+            clearInterval (start_timer);
+            timerCountDown.hide();
+            timeRemaining = "";
+            timer = 0;
+            clearInterval (start_timer);
+
+            var l = $('#place_it');
+            l.click();
+
+            // start_timer = null;
+        } else{
+            timerCountDown.show();
+            timer++;
+            var timeLeft = 0;
+            timeRemaining = "Time Remaining : "  + (allowedTime - timer);
+            timerLabel.text(timeRemaining);
+
+            // start_timer = setTimeout(startTimer, 1000)
+        }
+        }, 1000);
+        timer++;
+    }
+    // get timer from django and replace allowedTime value
+    var getGameTimer = function(){
+        console.log("Fetching Game Time");
+        $.ajax({
+            url: "{% url 'get_game_timer' game_id=game_id turn_number=turn|add:1 %}" + '/?timestamp=' + Math.random(),
+            data: {},
+            success: function (data) {
+                allowedTime = data['remaining_time'];
+                console.log("allowedTime: " + allowedTime);
+                if(start_timer!=null){
+                    clearInterval(start_timer);
+                    startTimer();
+                }
+            },
+            error: function(data) {
+                console.log("error occurred while getting timer: " + data);
+                allowedTime = 60;
+                // if(start_timer!=null){
+                //     clearInterval(start_timer);
+                //     startTimer();
+                // }
+            },
+        });
+    }
+    getGameTimer();
+
+            $('#next_turn_btn').hide();
+             $('#place_it').hide();
+             $('#shiftButton').hide();
+            //alert("turn update" + myturn)
+
+            $('#placebid').on('click', function () {
+                allowedTime=60;
+                if($.trim($("#a2b").val()) == ""){
+                                    alert("Plese enter a2b value");
+                                    return false;
+                                }
+                                if($.trim($("#b2a").val()) == ""){
+                                    alert("Plese enter b2a value");
+                                    return false;
+                                }
+                $('#placebid').hide();
+                placebid_clicked=true;
+                var a2b = $("#a2b").val();
+                var b2a = $("#b2a").val();
+                // placed_turn_count = placed_turn_count +1;
+                $.ajax({
+                        method: 'GET',
+                        url: "/TurnUpdate/",
+                        data: {
+                            gameid: game_id,
+                            a2b: a2b,
+                            b2a: b2a,
+                            csrfmiddlewaretoken: "{{csrf_token}}"
+                        },
+                        success: function (data) {
+                            var result = data;
+                            processGameErrorMsg(result);
+                            //alert(result["turn"]);
+                            //alert(result["success"]);
+                            //$('#turn_id').text(result["turn"] + 1);
+                            $('#smessage').append(result["success"]);
+                            //alert("return turn" + result["game_id"])
+                            <!--$('#place_it').show();-->
+                            $('#next_turn_btn').show();
+
+                            var turn =result["turn"];
+                            //$('#turn_id').text(turn + 1);
+                            document.getElementById("current_turn").innerHTML =turn;
+                            currentTurn = turn;
+                            //move_next();
+
+                            {% if game_data.user.id != request.user.id %}
+                            next_turnchange();
+                            {% endif %}
+                            <!--writing Place_it buton task -->
+                            <!--Place_it task ends here -->
+                        },
+                        error: function (err) {
+                            var dict = err;
+                            <!--$('#placebid').show();-->
+                        }
+                })
+            });
+
+            $('#place_it').on('click', function () {
+                allowedTime=60;
+                timer=0;
+                timerCountDown.hide();
+                clearInterval(start_timer);
+                if($.trim($("#a2b").val()) == ""){
+                                    alert("Plese enter a2b value");
+                                    return false;
+                                }
+                                if($.trim($("#b2a").val()) == ""){
+                                    alert("Plese enter b2a value");
+                                    return false;
+                                }
+
+                $('#placebid').hide();
+                $('#place_it').hide();
+                turnPlacedBid = true;
+                var a2b = $("#a2b").val();
+                var b2a = $("#b2a").val();
+                var turn_id = currentTurn +1;
+
+                $.ajax({
+                        method: 'GET',
+                        url: "/PlaceBid/",
+                        data: {
+                            gameid: game_id,
+                            a2b: a2b,
+                            b2a: b2a,
+                            turn: turn_id,
+                            csrfmiddlewaretoken: "{{csrf_token}}"
+                        },
+                        success: function (data) {
+                            var result = data;
+                            processGameErrorMsg(result);
+
+                            //alert(result["turn"]);
+                            //alert(result["success"]);
+                            //alert("You have palced your bid successfully");
+                            var turn =result["turn"];
+                            //$('#turn_id').text(turn + 1);
+
+                            document.getElementById("current_turn").innerHTML =turn;
+                            currentTurn = turn;
+                            next_turnchange();
+
+                        },
+                        error: function (err)
+                        {
+                            console.log(err);
+                            var l = $('#place_it');
+                            l.click();
+                        }
+                })
+                });
+            display_turn_result();
+
+
+$(".bids").focus(function () {
+  $(this).data('val', $(this).val());
+});
+
+$(".bids").change(function () {
+  if (parseInt($(this).val()) > 1500) {
+  	alert("You can not bid more than 1500");
+	$(this).val($(this).data('val'));
+	$(this).focus();
+  }
+  if (parseInt($(this).val()) < 0) {
+  	alert("You can not bid -ve values");
+	$(this).val($(this).data('val'));
+	$(this).focus();
+  }
+});
+
+</script>
+{% endblock %}

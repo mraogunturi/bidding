@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pricing Simulation</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href={% static "css/bootstrap.min.css" %} rel="stylesheet">
+    <link href={% static "css/bootstrap-reset.css" %} rel="stylesheet">
+    <!--external css-->
+    <link href={% static "assets/font-awesome/css/font-awesome.css" %} rel="stylesheet" />
+    <!--<link href={% static "css/navbar-fixed-top.css" %} rel="stylesheet">-->
+
+      <!-- Custom styles for this template -->
+    <link href={% static "css/style.css" %} rel="stylesheet">
+    <link href={% static "css/style-responsive.css" %} rel="stylesheet" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body class="full-width">
+
+  <section id="container" class="">
+      <!--header start-->
+      <header class="header white-bg">
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span class="fa fa-bars"></span>
+              </button>
+
+              <!--logo start-->
+              <a href="/login/" class="logo"><img alt="" src={% static "img/SCH.jpeg" %}></a>
+              <!--logo end-->
+              <div class="horizontal-menu navbar-collapse collapse ">
+                  <ul class="nav navbar-nav">
+                      <!-- <li><a href="/registration/">Register</a></li> -->
+                    {#<li class="active"><a href="#">Components</a></li>#}
+                      <!--<li class="dropdown">-->
+                          <!--<a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#">About Us <b class=" fa fa-angle-down"></b></a>-->
+                          <!--<ul class="dropdown-menu">-->
+                              <!--<li><a href="">Menu 1</a></li>-->
+
+                          <!--</ul>-->
+                      <!--</li>-->
+                      <li class="active"><a href="/login/">Login</a></li>
+                  </ul>
+
+              </div>
+              <div class="top-nav ">
+                  <ul class="nav pull-right top-menu">
+                      <li>
+{#                          <input type="text" class="form-control search" placeholder=" Search">#}
+                      </li>
+                      <!-- user login dropdown start-->
+{#                      <li class="dropdown">#}
+{#                          <a data-toggle="dropdown" class="dropdown-toggle" href="#">#}
+{#                              <img alt="" src={% static "img/avatar1_small.jpg" %}>#}
+{#                              <span class="username">Jhon Doue</span>#}
+{#                              <b class="caret"></b>#}
+{#                          </a>#}
+{#                          <ul class="dropdown-menu extended logout">#}
+{#                              <div class="log-arrow-up"></div>#}
+{#                              <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>#}
+{#                              <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>#}
+{#                              <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>#}
+{#                              <li><a href="login.html"><i class="fa fa-key"></i> Log Out</a></li>#}
+{#                          </ul>#}
+{#                      </li>#}
+                      <!-- user login dropdown end -->
+                  </ul>
+              </div>
+
+          </div>
+
+      </header>
+      <!--header end-->
+      <!--sidebar start-->
+
+      <!--sidebar end-->
+      <!--main content start-->
+      <section id="main-content">
+          <section class="wrapper">
+              <div class="row" >
+                <div class="col-lg-2">
+                </div>
+
+                <div class="col-lg-8">
+                    {% if error_message %}
+                        <div class="alert alert-block alert-danger fade in" style="margin-left: 100px;background:#ffAA66; color:#ffffff">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <strong></strong> {{ error_message }}
+                        </div>
+                    {% endif %}
+
+                    {% if success_message %}
+                        <div class="alert alert-block alert-success fade in" style="margin-left: 100px;background:#ffAA66; color:#ffffff">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <strong></strong> {{ success_message }}
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <div class="col-lg-2">
+                </div>
+                <!-- page start-->
+            </div>
+              <!-- page start-->
+            <form class="form-signin" data-toggle="validator" id="login_form" action="/login/" method="post" enctype="multipart/form-data" style="margin: 0px auto 0px;">
+                {% csrf_token %}
+        <h2 class="form-signin-heading">Login</h2>
+		<div id="progress_bar" style="margin-left:auto; margin-right:auto; text-align:center; display:none"><img src="/static/img/ajax-loader.gif"></div>
+        <div class="login-wrap">
+            <input type="email"  name="email" id="input_email" class="form-control" placeholder="Email Address" autofocus="" style="width: 300px"
+              data-error="Invalid Email Address"/>
+
+            <div id="errors_div" class="help-block with-errors" style="display: none;">Enter  Valid Email Address</div>
+            
+            <label class="checkbox">
+                <input type="checkbox" value="remember-me"> Remember me
+                <!-- <span class="pull-right"> -->
+                    <!-- <a data-toggle="modal" href="#myModal"> Forgot Password?</a> -->
+
+                <!-- </span> -->
+            </label>
+            <button id="btn_login" class="btn btn-lg btn-login btn-block" type="submit">Login</button>
+            </form>
+            
+
+        </div>
+
+          <!-- Modal -->
+          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                          <h4 class="modal-title">Forgot Password ?</h4>
+                      </div>
+                      <div class="modal-body">
+                          <p>Enter your e-mail address below to reset your password.</p>
+                          <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
+
+                      </div>
+                      <div class="modal-footer">
+                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                          <button class="btn btn-success" type="button">Submit</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- modal -->
+
+
+
+              <!-- page end-->
+          </section>
+      </section>
+      <!--main content end-->
+      <!--footer start-->
+      <footer class="site-footer navbar-fixed-bottom">
+          <div class="text-center">
+              © 2016. All Rights Reserved
+              <a href="#" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
+      <!--footer end-->
+  </section>
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src={% static "js/jquery.js" %}></script>
+    <script src={% static "js/bootstrap.min.js" %}></script>
+    <script class="include" type="text/javascript" src={%  static "js/jquery.dcjqaccordion.2.7.js" %}></script>
+    <script type="text/javascript" src={% static "js/hover-dropdown.js" %}></script>
+    <script src={% static "js/jquery.scrollTo.min.js" %}></script>
+    <script src={% static "js/jquery.nicescroll.js" %} type="text/javascript"></script>
+    <script src={% static "js/respond.min.js" %} ></script>
+
+    <!--common script for all pages-->
+    <script src={% static "js/common-scripts.js" %}></script>
+
+    <script type="text/javascript">
+
+	  $("#btn_login").click(function () {
+     	 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;	
+	     var email = $("#input_email").val();
+         if(re.test(email)){
+		  	setTimeout(function(){ $("#progress_bar").show() }, 1000);
+			$("#btn_login").addClass('disabled');
+         }
+	  });
+	  
+      $(document).ready(function(){
+        $("#login_form").submit(function(){
+              var email = $("#input_email").val();
+              var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              if(! re.test(email)){
+                $("#errors_div").show();
+                return false;
+              }
+            
+        });
+      });
+
+    </script>
+  </body>
+</html>

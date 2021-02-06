@@ -1,0 +1,479 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load appfilter %}
+{% block head %}
+
+<link rel="stylesheet" type="text/css" href={% static "jquery.jqplot.css" %} rel="stylesheet"/>
+<link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet">
+
+<style>
+.scroll_bar
+{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+</style>
+
+
+{% endblock %}
+{% block page_content %}
+
+            <!-- page start-->
+
+            <div class="row-fluid" id="draggable_portlets">
+
+
+
+                <div class="col-md-12 column sortable">
+                    <div class="panel panel-primary">
+                        {% for game in mybid %}
+                            {% if forloop.counter == 1 %}
+                                <div class="panel-heading" style="background:#54616e; color:#ffffff"><b>Game Result
+                                    : {{ game.game.name }}</b></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="panel panel-warning" >
+                        <div class="panel-heading" style="background:#999999; color:#ffffff">Ranking:</div>
+                        <div class="panel-body" id="games_div">
+                            {% include "components/results_ranks.html" with winner=winner %}
+
+                        </div>
+                    </div>
+ <div>
+                        <!--{{json_bid_data}}-->
+                    </div>
+
+                    <!-- END Portlet PORTLET-->
+
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="panel panel-success">
+
+                        <div class="panel-heading" style="background:#999999; color:#ffffff">Current Game Bid Graphs:
+                            <!--<button type="submit" name="graph"-->
+                                    <!--class="btn btn-">-->
+                            <!--</button>-->
+                        </div>
+<style>
+
+    #container1,#container2,#container3,#container4 {
+         width:100%;
+     max-width: 800px;
+    /*width: 800px;
+
+        height: 500px;*/
+        margin: 0 auto;
+        background-color: #59ace2;
+}
+#graphs{
+
+}
+
+</style>
+
+                        <div  id="graphs">
+                            <div id="container1"></div>
+                        <div id="container2"></div>
+                        <div id="container3"></div>
+ <div id="container4"></div>
+                        </div>
+       <div class="panel-heading" style="background:#999999; color:#ffffff">Current game bid values:</div>
+                        <div class="panel-body">
+                            <table id="bidValuesTable" class="table table-striped table-advance table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Turn</th>
+                                    <th>Player Name</th>
+                                    <th>Bid A &#10230; B</th>
+                                    <th>Bid B &#10230; A</th>
+                                    <th>Award A &#10230; B</th>
+                                    <th>Award B &#10230; A</th>
+									<th>Fleet Size</th>
+                                    <th>Net Contribution</th>
+									<th>Cumulative Net Contribution</th>
+                                    <th>Contribution per load</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <div>
+
+                                    {% for d in mybid%}
+
+                                                <tr>
+                                                    <td>{{ d.no_of_turn }}</td>
+                                                    <td>{{ d.game.id|get_nick_name:d.player.id }}</td>
+                                                    <td>{{ d.value_a2b }}</td>
+                                                    <td>{{ d.value_b2a }}</td>
+                                                    <td>{{ d.trucks_a2b_Awarded }}</td>
+                                                    <td>{{ d.trucks_b2a_Awarded }}</td>
+													<td>{{ d.fleet_size }}</td>
+													<td>{{ d.net_contribution }}</td>
+													<td>{{ d.cumulative }}</td>
+													<td>{{ d.contribution_per_load }}</td>
+                                                    <!--{% for i in fleet_info %}-->
+                                                     <!--<td>{{ i.trucks_max_awarded }}</td>-->
+
+                                                </tr>
+                                    <!--{% endfor %}-->
+
+                                    {% endfor %}
+                                </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+<br /><br />
+                </div>
+
+            </div>
+
+            <!-- page end-->
+{% endblock %}
+{% block extra_js %}
+
+
+    <script src={% static "jquery-1.11.0.min.js" %}></script>
+    <script src={% static "js/respond.min.js" %}></script>
+    <script src={% static "jquery.jqplot.min.js" %}></script>
+    <script src={% static "plugins/jqplot.highlighter.min.js" %}></script>
+    <script src={% static "plugins/jqplot.enhancedLegendRenderer.min.js" %}></script>
+    <script src={% static "plugins/jqplot.ohlcRenderer.min.js" %}></script>
+
+    <script type="text/javascript" src={% static "plugins/jqplot.cursor.js" %}></script>
+<script type="text/javascript" src={% static "plugins/jqplot.pointLabels.js" %}></script>
+<!-- <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script> -->
+
+<script src={% static "highcharts.js" %}></script>
+<script src={% static "exporting.js" %}></script>
+
+
+<!-- <script src={% static "assets/jquery-ui/jquery-ui-1.10.1.custom.min.js" %} type="text/javascript"></script>
+<script src={% static "js/bootstrap.min.js" %}></script>
+<script class="include" type="text/javascript" src={% static "js/jquery.dcjqaccordion.2.7.js" %}></script>
+<script type="text/javascript" src={% static "js/hover-dropdown.js" %}></script> -->
+<!-- <script src={% static "js/jquery.scrollTo.min.js" %}></script>
+<script src={% static "js/jquery.nicescroll.js" %} type="text/javascript"></script> -->
+<!-- <script src={% static "js/respond.min.js" %}></script>
+<script src={% static "js/draggable-portlet.js" %}></script> -->
+
+
+
+<script src={% static "js/jquery.dataTables.min.js" %}></script>
+
+
+    <script type="text/javascript">
+    var ajaxRefreshCount = 0;
+    function refresh() {
+
+         $.ajax({
+            method: 'GET',
+            url: "{% url 'game_winners' game=game_id %}?timestamp=" + Math.random(),
+            success: function (data) {
+
+                $("#games_div").html(data);
+                var table = $('#mynewGameResults').DataTable({
+                    scrollY: 400,
+                    scrollCollapse: true,
+                    paging: false,
+                    searching: false,
+                    ordering: false,
+                    info: false,
+                        fixedHeader: true});
+                ajaxRefreshCount = ajaxRefreshCount + 1;
+                if (ajaxRefreshCount < 60){
+                 setTimeout(refresh, 1000);
+                }
+            },
+            error: function (err) {
+                var dict = err;
+                console.log(err);
+                 setTimeout(refresh, 1000);
+            }
+        });
+
+     }
+ 
+ $(document).ready(function () {
+     //setTimeout(refresh, 1000);
+	 $('#bidValuesTable').DataTable({bLengthChange:false, pagingType:'full_numbers'});
+	 $('.dataTables_filter').addClass('pull-left');
+ });
+
+
+                                        jQuery(document).ready(function () {
+
+                                        });
+                                        var json_dat = "{{json_bid_data}}";
+                                        var json_text = json_dat.replace(/&quot;/g, '"').replace(/&#39;/g, "\'");
+                                        var data = JSON.parse(json_text);
+                                        console.log(data);
+var turn_limit = 0;
+var players = {};
+for(var i=0; i<data.length; i++){
+    var player = {};
+    var email = data[i].email;
+    var turn_no = data[i].turn_no;
+    var valuea2b= data[i].valuea2b;
+    var valueb2a = data[i].valueb2a;
+    var award_value_a2b = data[i].award_value_a2b;
+    var award_value_b2a = data[i].award_value_b2a;
+    turn_limit = data[i].turn_limit;
+
+    player.valuea2b = valuea2b;
+    player.valueb2a = valueb2a;
+    player.award_value_a2b = award_value_a2b;
+    player.award_value_b2a = award_value_b2a;
+
+    if(email){
+        if(players[email] === undefined){
+            players[email] = {};
+        }
+        if(turn_no){
+            players[email][turn_no] = player;
+        }
+    }
+}
+
+
+function getObj(str){
+    var response = [];
+    if(players){
+        Object.keys(players).map(function(email) {
+            var entry = {};
+            var values = [];
+
+            for(var j=1; j<=turn_limit; j++){
+                if(players[email][j] != undefined && players[email][j][str] != undefined){
+                    values.push(players[email][j][str]);
+                } else {
+                    values.push(null);
+                }
+            }
+
+            entry.name = email;
+            entry.data = values;
+            response.push(entry);
+        });
+    }
+    return response;
+}
+
+var valuea2b = getObj("valuea2b");
+var valueb2a = getObj("valueb2a");
+var award_value_a2b=getObj("award_value_a2b");
+var award_value_b2a=getObj("award_value_b2a");
+
+Highcharts.chart('container1', {
+
+    title: {
+        text: 'Bid A - B vs Turn'
+    },
+
+    subtitle: {
+        text: 'Bid A - B'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Bid Value'
+        }
+    },
+    xAxis: {
+        title: {
+          text: 'Turn Number'
+        },
+        tickInterval: 1
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            pointStart: 1
+        }
+    },
+
+
+    series: valuea2b
+});
+
+
+Highcharts.chart('container2', {
+
+    title: {
+        text: 'Bid B  - A vs Turn'
+    },
+
+    subtitle: {
+        text: 'Bid B - A'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Bid Value'
+        }
+    },
+    xAxis: {
+        title: {
+          text: 'Turn Number'
+        },
+        tickInterval: 1
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+
+            pointStart: 1
+        }
+    },
+
+    series: valueb2a
+});
+
+Highcharts.chart('container3', {
+
+    title: {
+        text: 'Award A - B vs Turn'
+    },
+
+    subtitle: {
+        text: 'Award A - B'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Bid Value'
+        }
+    },
+    xAxis: {
+        title: {
+          text: 'Turn Number'
+        },
+        tickInterval: 1
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            pointStart: 1
+        }
+    },
+
+    series: award_value_a2b
+});
+
+
+Highcharts.chart('container4', {
+
+    title: {
+        text: 'Award B - A vs Turn'
+    },
+
+    subtitle: {
+        text: 'Award B -A'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Bid Value'
+        }
+    },
+    xAxis: {
+        title: {
+          text: 'Turn Number'
+        },
+        tickInterval: 1
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            pointStart: 1
+        }
+    },
+
+    series: award_value_b2a
+});
+
+
+
+     var time = new Date().getTime();
+     $(document.body).bind("mousemove keypress", function(e) {
+         time = new Date().getTime();
+     });
+
+     // function refresh() {
+     //     if(new Date().getTime() - time >= 5000)
+     //         window.location.reload(true);
+     //     else
+     //         setTimeout(refresh, 5000);
+     // }
+
+     // setTimeout(refresh, 5000);
+</script>
+<script >
+$(document).ready(function(){
+     var table = $('#mynewGameResults').DataTable({
+            scrollY: 400,
+    scrollCollapse: true,
+    paging: false,
+    searching: false,
+    ordering: false,
+    info: false,
+            fixedHeader: true});
+    });
+    // new $.fn.dataTable.FixedHeader( table );
+
+
+
+    $("#menu_mydashboard").addClass("active");
+
+function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(25)
+                    .height(25);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+
+<script>
+     var time = new Date().getTime();
+     $(document.body).bind("mousemove keypress", function(e) {
+         time = new Date().getTime();
+     });
+
+
+</script>
+
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+
+{% endblock %}

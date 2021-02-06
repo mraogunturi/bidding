@@ -1,0 +1,401 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_content %}
+
+<link rel="stylesheet" type="text/css" href="{% static "css/spinner.css" %}">
+
+              <!-- page start-->
+            <div class="row">
+                  <div class="col-lg-12">
+
+                      <section class="panel" >
+                          <header class="panel-heading" >
+                          <span class="label label-primary" style="background:#54616e; color:#FFFFFF" ><b>Create Game</b></span>
+                          </header>
+                      
+                          <div class="panel-body" style="background: #eeeee;">
+								<div id="progress_bar" style="margin-left:auto; margin-right:auto; text-align:center; display:none"><img src="/static/img/ajax-loader.gif"></div>
+                            <form id="game_form" name="CreateGame" action="/CreateGame/" method="post" enctype="multipart/form-data" id="CreateGameForm">
+                              {% csrf_token %}
+                                  <div class="form-group" >
+                                      <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">Game Name:</label>
+                                      <div class="col-lg-10">
+                                          <input type="text" name="game_name" id="game_name" class="form-control" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                      </div>
+                                  </div>
+                                  
+                                   <div class="form-group" style="display: none;">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Num of Players: <a><img  alt="" src={% static "img/QuestionMark.PNG"" %} height="15px" width="15px" data-toggle="Shrink-tool" title="Players may be added or removed before 1st bid"></img></a></label>
+                                  <div class="col-lg-10">
+                                      <input type="text" name="player_limit"class="form-control" value="2"  style="background-color:white; margin-bottom: 10px; width: 600px" required>
+
+                                  </div>
+                                </div>
+                               
+
+                                <div class="form-group" >
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">AI Players:</label>
+                                  <div class="col-lg-10">
+                                      <input type="checkbox" id ="Ai_check" name="ai_check_flag" class="" onchange="valueChanged()" value="True" style="background-color:white; margin-bottom: 10px;" />
+
+
+
+                                         <input type="number" id="Ai_limit" name="ai_limit" class="form-control input-number" value="0" style="background-color:white; margin-bottom: 10px; width: 600px" placeholder="Number of Players between 1 to 20. Example: 5"><br/>
+
+                                  </div>
+                                    </div>
+
+                                <div class="form-group">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Number of Turns:</label>
+                                  <div class="col-lg-10">
+                                      <input type="number" name="turn_limit" id="turn_limit" class="form-control input-number" placeholder="5" value="10" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                     
+                                  </div>
+                                     </div>
+                                <div class="form-group">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Number of Trucks:</label>
+                                  <div class="col-lg-10">
+                                      <input type="number" name="truck_limit" id="truck_limit" class="form-control input-number" value="15" placeholder="25" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                  </div>
+                                </div>
+
+                                <div class="form-group">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Brokerage Fee:($)</label>
+                                  <div class="col-lg-10">
+                                      <input type="number" name="brokerage_fee" id="brokerage_fee" class="form-control input-number" value="1200" placeholder="1200" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                  </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Empty Cost Per Truck:($)</label>
+                                  <div class="col-lg-10">
+                                      <input type="number" class="form-control input-number" name="empty_cost_pertruck" id="empty_cost_pertruck" value="550" placeholder="400" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                  </div>
+                                </div>
+
+                                <div class="form-group">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Loaded Cost Per Truck:($)</label>
+                                  <div class="col-lg-10">
+                                      <input type="number" class="form-control" name="load_cost_pertruck" id="load_cost_pertruck" value="550" placeholder="500" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                  </div>
+                                </div>
+                                
+                                 <div class="form-group">
+                                  <label for="inputPassword1" id="shrink1"  class="col-lg-2 col-sm-2 control-label">Shrink Ratio: </label>
+                                  <div class="col-lg-10">
+                                  
+                                      <input type="text" name="shirnk_ratio" class="form-control" value="0.85"  style="background-color:white; margin-bottom: 10px; width: 600px">
+                                  </div>
+                                </div>
+
+                                <div class="form-group">
+                                  <label for="inputPassword1" id="Growth"class="col-lg-2 col-sm-2 control-label" >Growth Ratio:</label>
+                                  <div class="col-lg-10">
+                                      <input type="text" name="growth_ratio" class="form-control" value="1.1" style="background-color:white; margin-bottom: 10px; width: 600px">
+                                  </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                  <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">Unused Capital Cost Per Truck:($)</label>
+                                  <div class="col-lg-10">
+                                      <input type="number" class="form-control input-number" name="unusedCapital_cost_pertruck" id="unusedCapital_cost_pertruck" value="250" placeholder="250" style="background-color:white; margin-bottom: 10px; width: 600px" required>
+                                  </div>
+                                </div>
+
+                                <div class="form-group" style="padding-top: 25px;">
+                                      <div class="col-lg-offset-2 col-lg-10">
+
+                                          <button type="reset" name="bid" style="background:#54616e; color:#ffffff"class="btn btn-danger">Clear Data</button>
+                                          <button id="btnCreateGame" type="submit" name="bid"  style="background:#54616e; color:#ffffff"  class="btn btn-success">Create Game</button>
+
+
+                                      </div>
+                                  </div>
+                          </form>
+                        </div>
+
+                        </section>
+                    </div>
+                  </div>
+
+{% endblock %}
+
+
+
+
+{% block extra_js %}
+
+
+<script type="text/javascript">
+ 
+$( "#game_form").validate({
+  rules: {
+    ai_limit: {
+		range: [0, 10]
+	},
+	turn_limit: {
+	    range: [1, 10]
+	},
+	truck_limit: {
+	    range: [1, 20]
+	},
+	brokerage_fee: {
+	    range: [100, 1500]
+	},
+	empty_cost_pertruck: {
+	    range: [250, 1000]
+	},
+	load_cost_pertruck: {
+	    range: [100, 250]
+	},
+	shirnk_ratio: {
+	    range: [1.0, 1.5]
+	},
+	growth_ratio: {
+	    range: [0.5, 1.5]
+	},
+	unusedCapital_cost_pertruck: {
+	    range: [100, 500]
+	},
+  },
+  messages: {
+    ai_limit: {
+		range: "AI Player limist must be less than 10 or equal."
+	},
+	turn_limit: {
+	    range: "Turn limit is allowed betwen 1 and 10."
+	},
+	truck_limit: {
+	    range: "Truck limit is allowed betwen 1 and 20."
+	},		 
+	brokerage_fee: {
+	    range: "Brokerage Fee be within the range of 100 and 1500."
+	},
+	empty_cost_pertruck: {
+	    range: "Cost per emtpy truck should within the range of 200 and 100."
+	},
+	load_cost_pertruck: {
+	    range: "Value should be within the range of 100 and 250"
+	},
+	shirnk_ratio: {
+	    range: "Allowed range 1.0 and 1.5",
+	},
+	growth_ratio: {
+	    range: "Allowed range 0.5 and 1.5",
+	},
+	unusedCapital_cost_pertruck: {
+	    range: "Value should be within the range of 100 and 500"
+	},
+
+  }
+	
+});
+ 
+$("#btnCreateGame").click(function () {
+   var form = $( "#game_form");
+   if (hasFieldErrors) {
+     alert("Please fix field errors");
+     return false;
+   }
+   if (form.valid()) {
+		$("#progress_bar").show(); 
+		$("#btnCreateGame").addClass('disabled');
+		return true;
+   }
+   else {
+   		return false;
+   }
+});
+                                  
+function valueChanged()
+{
+    if($('#Ai_check').is(":checked"))
+        $("#Ai_limit").show();
+    else
+        $("#Ai_limit").hide();
+}                               
+                                  
+
+  
+  $("#menu_creategame").addClass("active");
+
+      $('.input-number').on('keypress', function(e){
+  return e.metaKey || // cmd/ctrl
+    e.which <= 0 || // arrow keys
+    e.which == 8 || // delete key
+    /[0-9]/.test(String.fromCharCode(e.which)); // numbers
+});
+    $('form').submit(function(evt) {
+        /*alert({{no}});
+        alert('Game has been created');*/
+        
+             if($("#game_name").val()==""){
+                     alert("Plese enter Game name");
+                     return false;
+             }
+        
+{#   if ($('#start_date').val() === $('#end_date').val()) {#}
+{#     alert('Start Date Time and End Date Time are same Please correct it.');#}
+{#     evt.preventDefault();#}
+{#   }#}
+{#  if ($('#end_date').val() < $('#start_date').val()){#}
+{#     alert('End Date Time must be greater than Start Date Time');#}
+{#     evt.preventDefault();#}
+{#    }#}
+    })
+
+
+     /*
+     * Date Format 1.2.3
+     * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
+     * MIT license
+     *
+     * Includes enhancements by Scott Trenda <scott.trenda.net>
+     * and Kris Kowal <cixar.com/~kris.kowal/>
+     *
+     * Accepts a date, a mask, or a date and a mask.
+     * Returns a formatted version of the given date.
+     * The date defaults to the current date/time.
+     * The mask defaults to dateFormat.masks.default.
+     */
+
+    var dateFormat = function () {
+        var    token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+            timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+            timezoneClip = /[^-+\dA-Z]/g,
+            pad = function (val, len) {
+                val = String(val);
+                len = len || 2;
+                while (val.length < len) val = "0" + val;
+                return val;
+            };
+
+        // Regexes and supporting functions are cached through closure
+        return function (date, mask, utc) {
+            var dF = dateFormat;
+
+            // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+            if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+                mask = date;
+                date = undefined;
+            }
+
+            // Passing date through Date applies Date.parse, if necessary
+            date = date ? new Date(date) : new Date;
+            if (isNaN(date)) throw SyntaxError("invalid date");
+
+            mask = String(dF.masks[mask] || mask || dF.masks["default"]);
+
+            // Allow setting the utc argument via the mask
+            if (mask.slice(0, 4) == "UTC:") {
+                mask = mask.slice(4);
+                utc = true;
+            }
+
+            var    _ = utc ? "getUTC" : "get",
+                d = date[_ + "Date"](),
+                D = date[_ + "Day"](),
+                m = date[_ + "Month"](),
+                y = date[_ + "FullYear"](),
+                H = date[_ + "Hours"](),
+                M = date[_ + "Minutes"](),
+                s = date[_ + "Seconds"](),
+                L = date[_ + "Milliseconds"](),
+                o = utc ? 0 : date.getTimezoneOffset(),
+                flags = {
+                    d:    d,
+                    dd:   pad(d),
+                    ddd:  dF.i18n.dayNames[D],
+                    dddd: dF.i18n.dayNames[D + 7],
+                    m:    m + 1,
+                    mm:   pad(m + 1),
+                    mmm:  dF.i18n.monthNames[m],
+                    mmmm: dF.i18n.monthNames[m + 12],
+                    yy:   String(y).slice(2),
+                    yyyy: y,
+                    h:    H % 12 || 12,
+                    hh:   pad(H % 12 || 12),
+                    H:    H,
+                    HH:   pad(H),
+                    M:    M,
+                    MM:   pad(M),
+                    s:    s,
+                    ss:   pad(s),
+                    l:    pad(L, 3),
+                    L:    pad(L > 99 ? Math.round(L / 10) : L),
+                    t:    H < 12 ? "a"  : "p",
+                    tt:   H < 12 ? "am" : "pm",
+                    T:    H < 12 ? "A"  : "P",
+                    TT:   H < 12 ? "AM" : "PM",
+                    Z:    utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
+                    o:    (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+                    S:    ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+                };
+
+            return mask.replace(token, function ($0) {
+                return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+            });
+        };
+    }();
+
+    // Some common format strings
+    dateFormat.masks = {
+        "default":      "ddd mmm dd yyyy HH:MM:ss",
+        shortDate:      "m/d/yy",
+        mediumDate:     "mmm d, yyyy",
+        longDate:       "mmmm d, yyyy",
+        fullDate:       "dddd, mmmm d, yyyy",
+        shortTime:      "h:MM TT",
+        mediumTime:     "h:MM:ss TT",
+        longTime:       "h:MM:ss TT Z",
+        isoDate:        "yyyy-mm-dd",
+        isoTime:        "HH:MM:ss",
+        isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
+        isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+    };
+
+    // Internationalization strings
+    dateFormat.i18n = {
+        dayNames: [
+            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+        ],
+        monthNames: [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+            "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+        ]
+    };
+
+    // For convenience...
+    Date.prototype.format = function (mask, utc) {
+        return dateFormat(this, mask, utc);
+    };
+
+    $(
+    function(){
+        $("#Ai_limit").hide();
+
+        $('#start_date_btn').click(function(){
+                  today = new Date();
+
+                  today.setDate(today.getDate() + 1);
+                  var dateString = today.format("m-dd-yy HH:MM:ss");
+                  $('#start_date').val(dateString)
+        });
+
+        $('#end_date_btn').click(function(){
+                  today = new Date();
+
+                  var dateString = today.format("m-dd-yy HH:MM:ss");
+                  $('#end_date').val(dateString)
+        });
+
+});
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block page_content %}
+            <!-- page start-->
+            <div class="row" onresize="resizeDataTable()">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <span class="label label-primary" style="background:#54616e; color:#FFFFFF">{{ game.name }}</span>
+                        </header>
+                        <div id="games_div" style="width:600px; margin-left:auto; margin-right:auto">
+							<h2> Please wait while we process your game results. Please click on the following link after few seconds. {{ game.game_status }}</h2>
+							<a href="/GameDetails/results/{{ game.id }}/show">Game results</a>
+                      </div>
+                    </section>
+                </div>
+            </div>
+{% endblock %}
+{% block extra_js %}
+<script >
+
+function refresh() {
+  //window.location.href="/GameDetails/results/{{ game.id }}/show"
+  location.reload();
+}
+
+$( document ).ready(function() {
+   //var success = setInterval( "refresh()", 6000);
+   setTimeout("refresh()", 3000);
+});
+
+</script>
+
+{% endblock %}
+
+
+

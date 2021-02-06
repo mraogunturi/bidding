@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_content %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>        
+<style>
+.scroll_bar
+{
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="{% static "css/spinner.css" %}">
+                        <div  id="graphs">
+                            <div id="container1"></div>
+                        <div id="container2"></div>
+                        <div id="container3"></div>
+ <div id="container4"></div>
+                        </div>
+       <div class="panel-heading" style="background:#999999; color:#ffffff">Current game bid values:</div>
+                        <div class="panel-body scroll_bar">
+                            <table id="bidValuesTable" class="table table-striped table-advance table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Turn</th>
+                                    <th>Player Name</th>
+                                    <th>Bid A &#10230; B</th>
+                                    <th>Bid B &#10230; A</th>
+                                    <th>Award A &#10230; B</th>
+                                    <th>Award B &#10230; A</th>
+									<th>Fleet Size</th>
+                                    <th>Net Contribution</th>
+									<th>Cumulative Net Contribution</th>
+                                    <th>Contribution per load</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for d in mybid%}
+
+                                                <tr>
+                                                    <td>{{ d.no_of_turn }}</td>
+                                                    <td>{{ d.nick_name }}</td>
+                                                    <td>{{ d.value_a2b }}</td>
+                                                    <td>{{ d.value_b2a }}</td>
+                                                    <td>{{ d.trucks_a2b_Awarded }}</td>
+                                                    <td>{{ d.trucks_b2a_Awarded }}</td>
+													<td>{{ d.fleet_size }}</td>
+													<td>{{ d.net_contribution }}</td>
+													<td>{{ d.cumulative }}</td>
+													<td>{{ d.contribution_per_load }}</td>
+                                                    <!--{% for i in fleet_info %}-->
+                                                     <!--<td>{{ i.trucks_max_awarded }}</td>-->
+
+                                                </tr>
+                                    <!--{% endfor %}-->
+
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+						<div>
+						<div id="graphDiv" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+						</div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+<br /><br />
+                </div>
+
+            </div>
+
+            <!-- page end-->
+<script>
+setTimeout(function(){ window.location.reload(); }, 3000);
+
+Highcharts.chart('graphDiv', {
+	plotOptions: {
+		series: {
+			animation: false
+		}
+	},
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        categories: {% autoescape off %} {{ players }} {% endautoescape %}
+    },
+    credits: {
+        enabled: false
+    },
+    series: {% autoescape off %} {{ series }} {% endautoescape %}
+});
+
+</script>
+
+
+{% endblock %}
+

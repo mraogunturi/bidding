@@ -1,0 +1,30 @@
+ 
+ -------------- celery@APT-7X2D4R1 v3.1.25 (Cipater)
+---- **** ----- 
+--- * ***  * -- Windows-7-6.1.7601-SP1
+-- * - **** --- 
+- ** ---------- [config]
+- ** ---------- .> app:         pricing:0x42611d0
+- ** ---------- .> transport:   amqp://guest:**@localhost:5672//
+- ** ---------- .> results:     
+- *** --- * --- .> concurrency: 4 (prefork)
+-- ******* ---- 
+--- ***** ----- [queues]
+ -------------- .> celery           exchange=celery(direct) key=celery
+                
+
+[tasks]
+  . celery.backend_cleanup
+  . celery.chain
+  . celery.chord
+  . celery.chord_unlock
+  . celery.chunks
+  . celery.group
+  . celery.map
+  . celery.starmap
+  . pricing.celery.debug_task
+  . pricingsimulation.tasks.calculate_formulas
+  . pricingsimulation.tasks.end_game
+  . pricingsimulation.tasks.start_game
+  . pricingsimulation.tasks.update_simulation
+
