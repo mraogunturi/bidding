@@ -1,20 +1,20 @@
 {% load static %}
-<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <title>Pricing Simulation</title>
 
     <!-- Bootstrap core CSS -->
-    <link href={% static "css/bootstrap.min.css" %} rel="stylesheet">
-    <link href={% static "css/bootstrap-reset.css" %} rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-reset.css' %}" rel="stylesheet">
     <!--external css-->
-    <link href={% static "assets/font-awesome/css/font-awesome.css" %} rel="stylesheet" />
+    <link href="{% static 'assets/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
     <!--<link href={% static "css/navbar-fixed-top.css" %} rel="stylesheet">-->
 
       <!-- Custom styles for this template -->
-    <link href={% static "css/style.css" %} rel="stylesheet">
-    <link href={% static "css/style-responsive.css" %} rel="stylesheet" />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
     <!--[if lt IE 9]>
@@ -34,7 +34,7 @@
               </button>
 
               <!--logo start-->
-              <a href="/login/" class="logo"><img alt="" src={% static "img/SCH.jpeg" %}></a>
+              <a href="/login/" class="logo"><img alt=""></a>
               <!--logo end-->
               <div class="horizontal-menu navbar-collapse collapse ">
                   <ul class="nav navbar-nav">
@@ -59,7 +59,7 @@
                       <!-- user login dropdown start-->
 {#                      <li class="dropdown">#}
 {#                          <a data-toggle="dropdown" class="dropdown-toggle" href="#">#}
-{#                              <img alt="" src={% static "img/avatar1_small.jpg" %}>#}
+{#                              <img alt="" src="{% static 'img/avatar1_small.jpg' %}">#}
 {#                              <span class="username">Jhon Doue</span>#}
 {#                              <b class="caret"></b>#}
 {#                          </a>#}
@@ -117,24 +117,24 @@
               <!-- page start-->
             <form class="form-signin" data-toggle="validator" id="login_form" action="/login/" method="post" enctype="multipart/form-data" style="margin: 0px auto 0px;">
                 {% csrf_token %}
-        <h2 class="form-signin-heading">Login</h2>
-		<div id="progress_bar" style="margin-left:auto; margin-right:auto; text-align:center; display:none"><img src="/static/img/ajax-loader.gif"></div>
-        <div class="login-wrap">
-            <input type="email"  name="email" id="input_email" class="form-control" placeholder="Email Address" autofocus="" style="width: 300px"
-              data-error="Invalid Email Address"/>
+                <h2 class="form-signin-heading">Login</h2>
+		        <div id="progress_bar" style="margin-left:auto; margin-right:auto; text-align:center; display:none"><img src="/static/img/ajax-loader.gif"></div>
+                <div class="login-wrap">
+                <input type="email"  name="email" id="input_email" class="form-control" placeholder="Email Address" autofocus="" style="width: 300px"
+                data-error="Invalid Email Address"/>
 
-            <div id="errors_div" class="help-block with-errors" style="display: none;">Enter  Valid Email Address</div>
+                <div id="errors_div" class="help-block with-errors" style="display: none;">Enter  Valid Email Address</div>
             
-            <label class="checkbox">
-                <input type="checkbox" value="remember-me"> Remember me
-                <!-- <span class="pull-right"> -->
-                    <!-- <a data-toggle="modal" href="#myModal"> Forgot Password?</a> -->
-
-                <!-- </span> -->
-            </label>
-            <button id="btn_login" class="btn btn-lg btn-login btn-block" type="submit">Login</button>
+                <label class="checkbox">
+                    <input type="checkbox" value="remember-me"> Remember me
+                    <span class="pull-right">
+                    <a data-toggle="modal" href="#myModal"> Forgot Password?</a>
+                     </span>
+                </label>
+                <button id="btn_login" class="btn btn-lg btn-login btn-block" type="submit">Login</button>
             </form>
-            
+
+              <button id="btn_register" class="btn btn-lg btn-login btn-block" type="submit">Register</button>
 
         </div>
 

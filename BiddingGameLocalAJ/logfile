@@ -903,3 +903,15 @@ django.core.cache.backends.base.InvalidCacheBackendError: Could not find backend
 [05/Feb/2021 16:24:14] INFO [pricingsimulation.views:572] 8hg4tp14ykff8y08qzynbcoq7l4l5z8k:1612567454 Done generating results for game id: 1149 in 0.092002 ms
 [05/Feb/2021 16:25:10] INFO [pricingsimulation.views:516] 8hg4tp14ykff8y08qzynbcoq7l4l5z8k:1612567510 Begin generating Result for game id: 1149
 [05/Feb/2021 16:25:10] INFO [pricingsimulation.views:572] 8hg4tp14ykff8y08qzynbcoq7l4l5z8k:1612567510 Done generating results for game id: 1149 in 0.220575 ms
+[06/Feb/2021 13:10:27] INFO [pricingsimulation.views:42] None:1612642227 Begin User Authentication
+[06/Feb/2021 13:10:28] INFO [pricingsimulation.views:61] 0u8ujpqer719f8lq2kjfvxx8t1w91mxb:1612642228 End User Authentication
+[06/Feb/2021 13:17:50] INFO [pricingsimulation.views:42] None:1612642670 Begin User Authentication
+[06/Feb/2021 13:17:50] INFO [pricingsimulation.views:61] xwwg8phegzpdglbktek8z3a7tnrbg9bz:1612642670 End User Authentication
+[06/Feb/2021 13:35:29] INFO [pricingsimulation.views:42] None:1612643729 Begin User Authentication
+[06/Feb/2021 13:35:29] INFO [pricingsimulation.views:61] 9cg70qrovkr8cp6iimfiahw3ivwi9njf:1612643729 End User Authentication
+[06/Feb/2021 13:37:42] INFO [pricingsimulation.views:42] None:1612643862 Begin User Authentication
+[06/Feb/2021 13:37:42] INFO [pricingsimulation.views:61] s2wqtd6hvqyc1okba2fh4wjfyxpsr339:1612643862 End User Authentication
+[06/Feb/2021 13:45:59] INFO [pricingsimulation.views:42] None:1612644359 Begin User Authentication
+[06/Feb/2021 13:46:00] INFO [pricingsimulation.views:61] qi67ulwggvzmbuj58rs7r34i104zz0ck:1612644360 End User Authentication
+[06/Feb/2021 14:14:54] INFO [pricingsimulation.views:42] None:1612646094 Begin User Authentication
+[06/Feb/2021 14:14:55] INFO [pricingsimulation.views:61] oolahe8ofa4d1qv8kt210xly2wp6m0jp:1612646095 End User Authentication
