@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # pricing simulation an below are apps
     'pricingsimulation',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

@@ -915,3 +915,6 @@ django.core.cache.backends.base.InvalidCacheBackendError: Could not find backend
 [06/Feb/2021 13:46:00] INFO [pricingsimulation.views:61] qi67ulwggvzmbuj58rs7r34i104zz0ck:1612644360 End User Authentication
 [06/Feb/2021 14:14:54] INFO [pricingsimulation.views:42] None:1612646094 Begin User Authentication
 [06/Feb/2021 14:14:55] INFO [pricingsimulation.views:61] oolahe8ofa4d1qv8kt210xly2wp6m0jp:1612646095 End User Authentication
+[12/Feb/2021 15:10:47] WARNING [django.request:222] Not Found: /favicon.ico
+[12/Feb/2021 15:12:44] INFO [pricingsimulation.views:42] oolahe8ofa4d1qv8kt210xly2wp6m0jp:1613167964 Begin User Authentication
+[12/Feb/2021 15:12:44] INFO [pricingsimulation.views:61] oolahe8ofa4d1qv8kt210xly2wp6m0jp:1613167964 End User Authentication
